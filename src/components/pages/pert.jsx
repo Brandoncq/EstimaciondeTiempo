@@ -214,6 +214,14 @@ export const Pert= () => {
                 <input type="submit" value="Crear" />
               </form>
             </div>
+            <div className='recuadro m-3'>
+              <p className="emphasized">Imagen Representativa</p>
+              <div className='row m-0 d-flex justify-content-center'>
+                <div className='col-lg-6 col-12 p-2'>
+                  <img src='https://cdnb.ganttpro.com/uploads/2021/07/diagrama_pert.jpg' className='img-fluid'></img>
+                </div>
+              </div>
+            </div>
           </div>
           )}
         </div>
@@ -383,20 +391,6 @@ export const Pert= () => {
         </div>
       </div>
       )}
-      <div className='row m-0'>
-        <div className='col-12 p-4'>
-          <div className='marco'>
-            <div className='recuadro m-3'>
-              <p class="emphasized">Imagenes Representativas</p>
-              <div className='row m-0 d-flex justify-content-center'>
-                <div className='col-lg-6 col-12 p-2'>
-                  <img src='https://cdnb.ganttpro.com/uploads/2021/07/diagrama_pert.jpg' className='img-fluid'></img>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 }

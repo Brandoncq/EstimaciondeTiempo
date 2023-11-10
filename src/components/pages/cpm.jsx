@@ -212,6 +212,14 @@ export const Cpm = () => {
                 <input type="submit" value="Crear" />
               </form>
             </div>
+            <div className='recuadro m-3'>
+              <p className="emphasized">Imagen Representativa</p>
+              <div className='row m-0 d-flex justify-content-center'>
+                <div className='col-lg-8 col-12 p-2'>
+                  <img src='https://diagramaweb.com/wp-content/uploads/2020/10/diagrama-de-flechas-pasos-1.png' className='img-fluid'></img>
+                </div>
+              </div>
+            </div>
           </div>
           )}
           </div>
@@ -312,20 +320,6 @@ export const Cpm = () => {
           </div>
         </div>
         )}
-      </div>
-      <div className='row m-0'>
-        <div className='col-12 p-4'>
-          <div className='marco'>
-            <div className='recuadro m-3'>
-              <p class="emphasized">Imagenes Representativas</p>
-              <div className='row m-0 d-flex justify-content-center'>
-                <div className='col-lg-8 col-12 p-2'>
-                  <img src='https://1.bp.blogspot.com/-EIYPmm2oSfM/Wplkxi5g2EI/AAAAAAAAEkM/EEcks7XAamMBaT_CExNHSbA8iS8ni5M4wCLcBGAs/s1600/PERT02.png' className='img-fluid'></img>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </>
   );
