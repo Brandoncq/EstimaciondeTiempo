@@ -5,7 +5,7 @@ export const Navbar = () => {
   const [menuopen,setmenu] = useState(false)
   return(
     <nav>
-      <Link to="/EstimaciondeTiempo" className='title'>Inicio</Link>
+      <Link to="/" className='title'>Inicio</Link>
       <div className='menu' onClick={()=>{
           setmenu(!menuopen);
         }}>
@@ -14,8 +14,8 @@ export const Navbar = () => {
           <span></span>
       </div>
       <ul className={menuopen ? 'open' : ''}>
-        <li><NavLink to="/EstimaciondeTiempo/cpm">CPM</NavLink></li>
-        <li><NavLink to="/EstimaciondeTiempo/pert">PERT</NavLink></li>
+        <li><NavLink to="/cpm">CPM</NavLink></li>
+        <li><NavLink to="/pert">PERT</NavLink></li>
         {/*<li><NavLink to="/decision">DECISION THEORY</NavLink></li>
         <li><Link to="/m-inventario">M.Inventario</Link></li>
         <li><Link to="/t-desiciones">T.Desiciones</Link></li>

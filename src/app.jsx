@@ -7,12 +7,12 @@ function App() {
 
   return (
     <div className='App'>
-      {(location.pathname !== '/EstimaciondeTiempo' && location.pathname !== '/EstimaciondeTiempo/') && <Navbar />}
+      {(location.pathname !== '/') && <Navbar />}
       <Routes>
-        <Route path='/EstimaciondeTiempo' element={<Portada />} />
-        <Route path='/EstimaciondeTiempo/cpm' element={<Cpm />} />
-        <Route path='/EstimaciondeTiempo/pert' element={<Pert />} />
-        <Route path='/EstimaciondeTiempo/decision' element={<Desicion />} />
+        <Route path='/' element={<Portada />} />
+        <Route path='/cpm' element={<Cpm />} />
+        <Route path='/pert' element={<Pert />} />
+        <Route path='/decision' element={<Desicion />} />
       </Routes>
     </div>
   );
