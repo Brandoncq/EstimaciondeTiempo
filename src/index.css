@@ -105,7 +105,7 @@ video {
   z-index: -1;
 }
 .gradient{
-  background-image: linear-gradient(to left, rgba(255, 154, 157, 0.5) 0%, rgba(254, 207, 239, 0.3) 99%, rgba(254, 207, 239, 0.3) 100%);
+  filter: grayscale(100%);
 }
 .content {
   position: absolute;
@@ -120,14 +120,13 @@ video {
   overflow-x: hidden; /* Eliminar la barra de desplazamiento horizontal en pantallas grandes */
 }
 .menu-portada{
-  color: white;
   list-style: none;
 }
 .lista-portada{
   color: white;
   text-decoration: none;
   font-weight: bold;
-  font-size: xx-large;
+  font-size: 5em;
 }
 @media (max-width: 480px) {
   video {

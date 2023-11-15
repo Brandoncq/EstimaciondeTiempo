@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import time from'./time.mp4';
+import intel from'./intel.mp4';
 export const Portada = () => {
   return(
     <>
       <div className="row m-0 p-0 gradient">
           <video autoPlay loop muted className='m-0 p-0'>
-            <source src={time} type="video/mp4" />
+            <source src={intel} type="video/mp4" />
             Tu navegador no soporta el elemento de video.
           </video>
           <div className="content m-0">
