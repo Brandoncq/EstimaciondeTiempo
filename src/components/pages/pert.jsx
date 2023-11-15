@@ -303,7 +303,7 @@ export const Pert= () => {
       )}
       {mostrarCanvas && (
       <div className='row m-0'>
-        <div className='col-lg-5 col-12 p-4' style={{height:'00vh'}}>
+        <div className='col-lg-5 col-12 p-4'>
           <div className='marco'>
             <div className='recuadro m-3'>
               <h3>Resultados</h3>
@@ -383,7 +383,7 @@ export const Pert= () => {
             </div>
           </div>     
         </div>
-        <div className='col-lg-7 col-12 p-4' style={{height:'100vh'}}>
+        <div className='col-lg-7 col-12 p-4'>
           <div className='row m-0 bg-custom'>
             <canvas id='pert' className='col-12 p-0' height='460'width='590'>
             </canvas>
