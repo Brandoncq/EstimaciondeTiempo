@@ -101,6 +101,16 @@ export const Cpm = () => {
       showmessage('Los Predecesores no pueden incluir a la Actividad de su misma fila.');
       return;
     }
+    let positividad = true;
+    actividades.forEach(number=>{
+      if(number.duracion <=0){
+        positividad=false
+      }
+    })
+    if (!positividad) {
+      showmessage('Los valores de tiempo no pueden ser menores o iguales a cero');
+      return;
+    }
     let haSactividadP = true;
     actividades.forEach(elemento=>{
       console.log(elemento.predecesores)
