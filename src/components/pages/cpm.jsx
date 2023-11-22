@@ -113,7 +113,6 @@ export const Cpm = () => {
     }
     let haSactividadP = true;
     actividades.forEach(elemento=>{
-      console.log(elemento.predecesores)
       if(elemento.predecesores.length > 1){
         const pred = elemento.predecesores.split(' ')
         pred.forEach(predecesor=>{
@@ -301,12 +300,12 @@ export const Cpm = () => {
               <div className='recuadro input-group p-3'>
                 <span className="input-group-text">Ruta Crítica</span>
                 <div className="form-floating">
-                  <input
+                  <textarea
                     type="text"
                     name='numero'
                     readOnly="readonly"
                     className='c-ruta form-control'
-                  />
+                  ></textarea>
                 </div>
               </div>
               <div className='recuadro input-group p-3'>
@@ -343,16 +342,33 @@ function GraficoCPM(graph){
   const { allPaths, longestPath, longestDuration } = findAllPaths(graph, 'Inicio', 'Fin');
   if (longestPath && longestDuration) {
     ruta.value=''
-    for (let i = 0; i < longestPath.length - 1; i++) {
-      if(longestPath[i].duration==0){
-        ruta.value += 'Fic';
-      }else{
-        ruta.value += longestPath[i].target;
+    allPaths.forEach(rutas=>{
+      let bandera = true
+      rutas.forEach(elemento=>{
+        const aux = graph.nodes.find(node => node.name == elemento.source)
+        const recorrido = graph.nodes.find(node => node.name == elemento.target+'-1')
+        const valink = graph.links.find(link => link.source == elemento.source && link.target == elemento.target)
+        if(recorrido && valink && aux && valink.duration!=0){
+          if(recorrido.IT==recorrido.TL && (parseFloat(aux.IT)+parseFloat(valink.duration)==recorrido.IT)){
+          }else{
+            bandera = false
+          }
+        }
+      })
+      if(bandera){
+        for (let i = 0; i < rutas.length - 1; i++) {
+          if(rutas[i].duration==0){
+            ruta.value += 'Fic';
+          }else{
+            ruta.value += rutas[i].target;
+          }
+          if(i!=rutas.length - 2){
+            ruta.value += ' 🠖 ';
+          }
+        }
+        ruta.value += '\n';
       }
-      if(i!=longestPath.length - 2){
-        ruta.value += ' 🠖 ';
-      }
-    }
+    })
     valor.value = longestDuration.toFixed(2)  
   }
 
@@ -466,9 +482,9 @@ function drawNode(d) {
     //ctx.fillText(d.name, textX, textY + 12);
   }else{
     ctx.font = "10px Arial";
-    ctx.fillText(d.IT, textX-1, textY-8);
+    ctx.fillText(d.TL, textX-1, textY-8);
     ctx.fillText("━━━", textX, textY);
-    ctx.fillText(d.TL, textX-1, textY+8);
+    ctx.fillText(d.IT, textX-1, textY+8);
   }
 }
 function drawLink(l) {
@@ -482,8 +498,10 @@ function drawLink(l) {
       ctx.strokeStyle = "#0fa4ee";
     }else if(l.type=='continuo'){
       ctx.strokeStyle = "#909baf";
+    }else if(l.type=='ruta'){
+      ctx.strokeStyle = "#ff0000";
     }
-    
+
     ctx.lineWidth = 2; // Ancho del enlace
 
     // Calcula la dirección y longitud del enlace
@@ -508,8 +526,10 @@ function drawLink(l) {
     ctx.save();
     if(l.type=='ficticio'){
       ctx.fillStyle = "#0fa4ee";
-    }else{
+    }else if(l.type=='continuo'){
       ctx.fillStyle = "#909baf";
+    }else if(l.type=='ruta'){
+      ctx.fillStyle = "#ff0000";
     }
     ctx.translate(arrowX, arrowY);
     ctx.rotate(Math.atan2(dy, dx));
@@ -691,43 +711,110 @@ function enlazar(graph){
       'type': enlace.tipo
     }
     graph.links.push(secuencia)
-  }) 
+  })
+  const paths = []
+  graph.nodes.forEach(sumandos=>{
+    paths.push(sumandos.name)
+  })
+  paths.forEach(elemento=>{
+    var info = {
+      "number":0,
+      "name": elemento+'-1',
+      "valor": 0,
+      "last":elemento,
+      "count": 1,
+      "IT": 0,
+      "FT": 0,
+      "TL": 0,
+      "IL": 0
+    }
+    var secuencia={
+      'source': elemento,
+      'target': elemento+'-1',
+      'duration': 0,
+      'type': 'info'
+    }
+    graph.nodes.push(info)
+    graph.links.push(secuencia)
+  })
   const { allPaths, longestPath, longestDuration } = findAllPaths(graph, 'Inicio', 'Fin');
 
-
-
-
-  if (longestPath) {
+  if (longestPath,allPaths,longestDuration) {
     let records=0
     longestPath.forEach(elemento=>{
       const recorrido = graph.nodes.find(node => node.name == elemento.target)
       const valink = graph.links.find(link => link.source == elemento.source && link.target == elemento.target)
       if(recorrido && valink){
         records=records+parseFloat(valink.duration)
-
-        var info = {
-          "number":0,
-          "name": recorrido.name+'-1',
-          "valor": records,
-          "last":recorrido.name,
-          "count": 1,
-          "IT": records,
-          "FT": 0,
-          "TL": records,
-          "IL": 0
+        const buscando = graph.nodes.find(node => node.name == elemento.target+'-1')
+        if (buscando) {
+          buscando.IT=records+recorrido.IT
+          buscando.TL=records+recorrido.TL
         }
-        var secuencia={
-          'source': recorrido.name,
-          'target': recorrido.name+'-1',
-          'duration': 0,
-          'type': 'info'
-        }
-        graph.nodes.push(info)
-        graph.links.push(secuencia)
-
       }
     })
+    allPaths.forEach(rutas=>{
+      let records=0
+      rutas.forEach(elemento=>{
+        const recorrido = graph.nodes.find(node => node.name == elemento.target)
+        const valink = graph.links.find(link => link.source == elemento.source && link.target == elemento.target)
+        if(recorrido && valink){
+          records=records+parseFloat(valink.duration)
+          const buscando = graph.nodes.find(node => node.name == elemento.target+'-1')
+          if (buscando) {
+            if(buscando.IT > records){
+              records=buscando.IT
+            }else{
+              buscando.IT=records+recorrido.IT
+            }
+          }
+        }
+      })
+    })
+    allPaths.forEach(rutas=>{
+      let records=longestDuration
+      for(let i=rutas.length-2;i>=0;i--){
+        const recorrido = graph.nodes.find(node => node.name == rutas[i].source)
+        const valink = graph.links.find(link => link.source == rutas[i+1].source && link.target == rutas[i+1].target)
+        if(recorrido && valink){
+          records=records-parseFloat(valink.duration)
+          const buscando = graph.nodes.find(node => node.name == rutas[i].target+'-1')
+          if (buscando) {
+            if(buscando.TL < records && buscando.TL!=0){
+              records=buscando.TL
+            }else{
+              buscando.TL=records-recorrido.TL
+            }
+          }
+        }
+      }
+    })
+    longestPath.forEach(elemento=>{
+      const recorrido = graph.nodes.find(node => node.name == elemento.target)
+      if(recorrido){
+        const buscando = graph.nodes.find(node => node.name == elemento.target+'-1')
+        if (buscando) {
+          recorrido.IT=buscando.IT
+          recorrido.TL=buscando.TL
+        }
+      }
+    })
+    allPaths.forEach(rutas=>{
+      rutas.forEach(elemento=>{
+
+        const aux = graph.nodes.find(node => node.name == elemento.source)
+        const recorrido = graph.nodes.find(node => node.name == elemento.target+'-1')
+        const valink = graph.links.find(link => link.source == elemento.source && link.target == elemento.target)
+        if(recorrido && valink && aux && valink.duration!=0){
+          if(recorrido.IT==recorrido.TL && (parseFloat(aux.IT)+parseFloat(valink.duration)==recorrido.IT)){
+            valink.type='ruta'
+          }
+        }
+      })
+    })
+
   }
+    
 }
 
 function findAllPaths(graph, startNode, endNode) {
