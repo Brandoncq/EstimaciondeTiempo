@@ -3,6 +3,10 @@ import { Link, NavLink } from 'react-router-dom';
 import React, { useState } from 'react';
 export const Navbar = () => {
   const [menuopen,setmenu] = useState(false)
+  window.addEventListener("scroll", ()=>{
+    var nav = document.querySelector("nav")
+    nav.classList.toggle("change",window.scrollY>0)
+  })
   return(
     <nav>
       <Link to="/" className='title'>Inicio</Link>

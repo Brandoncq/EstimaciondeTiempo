@@ -6,6 +6,8 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;*/
   background-color: white ;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f0f0f0;
 }
 .bg-custom{
   background-color: white;
@@ -128,6 +130,17 @@ video {
   font-weight: bold;
   font-size: 5em;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+}
+::-webkit-scrollbar-track {
+  background-color: #ffffff;
+}
+
 @media (max-width: 480px) {
   video {
     height: 100vh;

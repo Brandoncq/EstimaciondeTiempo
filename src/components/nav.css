@@ -1,22 +1,33 @@
 .active{
-    background-color: white;
-    color: black;
+    background-color: rgb(102, 100, 100);
+    color: rgb(255, 255, 255);
 }
 nav{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #303032;
     position: sticky;
     top: 0;
     z-index: 2;
+    transition: .4s;
+}
+.change{
+    background-color: rgba(48, 48, 50, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 5px 5px;
 }
 nav .title{
     font-size: 1.5em;
-    color: white;
     margin: 1em;
+    color: #303032;
     font-weight: bold;
     text-decoration: none;
+}
+.change .title{
+    color: white;
+}
+.change ul li a{
+    color: white;
 }
 nav ul{
     display: flex;
@@ -28,8 +39,8 @@ nav ul li{
 nav ul li a{
     display: block;
     text-decoration: none;
-    color: white;
     padding: 0.5rem;
+    color: #303032;
     margin: 0 0.5rem;
     border-radius: 0.5rem;
 }
@@ -37,12 +48,21 @@ nav ul li a:not(.active):hover{
     background-color: #dedfe1;
     color: #303032;
 }
+.change ul li a:not(.active):hover{
+    background-color: #303032;
+    color: #dedfe1;
+}
 nav .menu i{
-    color: white;
+    color: 303032;
     font-size: xx-large;
     padding: .2rem;
     margin: .1rem;
+    cursor: pointer;
 }
+.change .menu i {
+    color: #ffffff;
+}
+
 nav .menu{
     display: none;
     position: absolute;
