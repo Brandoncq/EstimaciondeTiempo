@@ -8,9 +8,10 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter basename="/EstimaciondeTiempo">
+    {/*<BrowserRouter basename="/EstimaciondeTiempo">*/}
+    <HashRouter>
       <App />
-    </BrowserRouter >
+    </HashRouter >
   </React.StrictMode>,
 )
 window.addEventListener('click',e=>{

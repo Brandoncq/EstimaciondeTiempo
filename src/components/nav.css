@@ -9,12 +9,15 @@ nav{
     position: sticky;
     top: 0;
     z-index: 2;
-    transition: .4s;
+    transition: .5s;
+    background-color: #303032eb;
+    /*
+    */
 }
 .change{
     background-color: rgba(48, 48, 50, 0.6);
     backdrop-filter: blur(10px);
-    padding: 5px 5px;
+    padding:8px 8px;
 }
 nav .title{
     font-size: 1.5em;
@@ -22,6 +25,9 @@ nav .title{
     color: #303032;
     font-weight: bold;
     text-decoration: none;
+    color: #dedfe1;
+    /*
+    */
 }
 .change .title{
     color: white;
@@ -40,9 +46,13 @@ nav ul li a{
     display: block;
     text-decoration: none;
     padding: 0.5rem;
-    color: #303032;
+    
     margin: 0 0.5rem;
     border-radius: 0.5rem;
+    color: #dedfe1;
+    /*
+    color: #303032;
+    */
 }
 nav ul li a:not(.active):hover{
     background-color: #dedfe1;
@@ -53,14 +63,14 @@ nav ul li a:not(.active):hover{
     color: #dedfe1;
 }
 nav .menu i{
-    color: 303032;
+    color: #dedfe1;
     font-size: xx-large;
     padding: .2rem;
     margin: .1rem;
     cursor: pointer;
 }
 .change .menu i {
-    color: #ffffff;
+    color: #dedfe1;
 }
 
 nav .menu{
@@ -79,7 +89,31 @@ nav menu span{
     background-color: white;
     border-radius: .2rem;
 }
-
+@media (max-width: 1050px) {
+    nav .menu{
+        display: flex;
+    }
+    nav{
+        flex-direction: column;
+        align-items: start;
+    }
+    nav ul{
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-bottom: .25rem;
+    }
+    nav ul.open{
+        display: flex;
+    }
+    nav ul li{
+        width: 100%;
+        text-align: center;
+    }
+    nav ul li a{
+        margin: .2rem .5rem;
+    }
+}
 @media (max-width: 480px) {
     nav .menu{
         display: flex;

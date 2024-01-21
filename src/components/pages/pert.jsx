@@ -51,6 +51,7 @@ export const Pert= () => {
 
   const handleGraficarClick = () => {
     var cifra=0
+    event.preventDefault()
     const validPredecesores = actividades.every((actividad) => {
       const predecesores = actividad.predecesores.trim();
     
@@ -68,19 +69,7 @@ export const Pert= () => {
       return; 
     }
 
-    const validValoresPe = actividades.every((actividad) => {
-      const valorop = actividad.optimista.trim()
-      const valorpr = actividad.probable.trim()
-      const valorpe = actividad.pesimista.trim()
-      if (!valorop || !valorpr || !valorpe) {
-        return false;
-      }
-      return !isNaN(valorop)
-    });
-    if (!validValoresPe) {
-      showmessage('La Duración de las Actividades debe ser un número válido y no puede estar en blanco.');
-      return;
-    }
+    
     let hasError = false;
     const validSpacePredecesores = actividades.every((actividad) => {
       const predecesores = actividad.predecesores;
@@ -107,19 +96,9 @@ export const Pert= () => {
       showmessage('Los Predecesores no pueden incluir a la Actividad de su misma fila.')
       return
     }
-    let positividad = true;
-    actividades.forEach(number=>{
-      if(number.optimista <=0 ||number.probable <=0 ||number.pesimista <=0 ){
-        positividad=false
-      }
-    })
-    if (!positividad) {
-      showmessage('Los valores de tiempo no pueden ser menores o iguales a cero');
-      return;
-    }
+    
     let haSactividadP = true;
     actividades.forEach(elemento=>{
-      console.log(elemento.predecesores)
       if(elemento.predecesores.length > 1){
         const pred = elemento.predecesores.split(' ')
         pred.forEach(predecesor=>{
@@ -141,6 +120,44 @@ export const Pert= () => {
     })
     if (!haSactividadP) {
       showmessage('Ha inculido un Predecesor que no esta incluido en la lista de Actividades');
+      return;
+    }
+    let haSactividadCoincidencia = true;
+    actividades.forEach(elemento=>{
+      if(elemento.predecesores.length > 1){
+        const pred = elemento.predecesores.split(' ')
+        const tieneDuplicados = pred.some((valor, indice) => pred.indexOf(valor) !== indice);
+        if (tieneDuplicados) {
+          console.log('Hay elementos duplicados en predecesores:', pred);
+          haSactividadCoincidencia = false;
+        }
+      }
+    })
+    if (!haSactividadCoincidencia) {
+      showmessage('No puede insertar una actividad mas de una vez como predecesor de una actividad');
+      return;
+    }
+    const validValoresPe = actividades.every((actividad) => {
+      const valorop = actividad.optimista.trim()
+      const valorpr = actividad.probable.trim()
+      const valorpe = actividad.pesimista.trim()
+      if (!valorop || !valorpr || !valorpe) {
+        return false;
+      }
+      return !isNaN(valorop)
+    });
+    if (!validValoresPe) {
+      showmessage('La Duración de las Actividades debe ser un número válido y no puede estar en blanco.');
+      return;
+    }
+    let positividad = true;
+    actividades.forEach(number=>{
+      if(number.optimista <=0 ||number.probable <=0 ||number.pesimista <=0 ){
+        positividad=false
+      }
+    })
+    if (!positividad) {
+      showmessage('Los valores de tiempo no pueden ser menores o iguales a cero');
       return;
     }
     const nodes = actividades.map((actividad) => {
@@ -181,20 +198,6 @@ export const Pert= () => {
   return (
     <>
       <div className='row m-0'>
-      <div className='col-12 p-2'>
-          <div className='marco m-3'>
-            <div className='recuadro m-3'>
-              <h2>PERT (Program Evaluation and Review Technique)</h2>
-              <br></br>
-              <p>
-              El acrónimo PERT significa Program Evaluation and Review Technique, que traducido es Técnica de revisión y evaluación de programas. Proporciona una representación visual del cronograma de un proyecto y desglosa las tareas individuales. Este diagrama es similar al diagrama de Gantt, pero su estructura es diferente.
-              </p>
-              <p>
-                El metodo PERT es más recomendable para los proyectos de investigación, en los cuales existe el problema de la estimación de los tiempos de trabajo y, por otro lado, tampoco hay antecedente para calcular los costes por unidad de tiempo, mientras que el CPM es aplicable a las construcciones en general en las cuales sea fácil estimar los tiempos y costes, y lo que interesa es saber cuál es la combinación coste-duración de cada tarea para que se pueda lograr el coste total mínimo del proyecto.
-              </p>
-            </div>
-          </div>
-        </div>
         <div className='col-12 p-2'>
           <div className='marco m-3'>
             <div className='recuadro m-3'>
@@ -206,6 +209,9 @@ export const Pert= () => {
               </p>
               <p>
                 •En la duración de la actividad se deben ingresar sólo valores positivos. Puedes ingresar decimales con punto.
+              </p>
+              <p>
+                •Si desea indicar que una actividad contiene como predecesor el Inicio inserte "-".
               </p>
             </div>
           </div>
@@ -219,6 +225,7 @@ export const Pert= () => {
                   name='numero'
                   min={2}
                   value={numeroActividades}
+                  placeholder='Max 10'
                   onChange={(e) => setNumeroActividades(e.target.value)}
                 />
                 <input type="submit" value="Crear" />
@@ -228,7 +235,7 @@ export const Pert= () => {
               <p className="emphasized">Imagen Representativa</p>
               <div className='row m-0 d-flex justify-content-center'>
                 <div className='col-lg-6 col-12 p-2'>
-                  <img src='https://cdnb.ganttpro.com/uploads/2021/07/diagrama_pert.jpg' className='img-fluid'></img>
+                  <img src='https://assets.asana.biz/transform/fce55983-714f-4329-8342-860f013fa157/inline-project-management-PERT-diagram-3-es-2x' className='img-fluid'></img>
                 </div>
               </div>
             </div>
@@ -304,8 +311,8 @@ export const Pert= () => {
             </div>
           </div>
           <div className='marco m-3'>
-            <div className='m-3'>
-              <input type="button" value="Resolver" onClick={handleGraficarClick} />
+            <div className='m-3 d-flex justify-content-center'>
+              <input className='strokes' type="submit" value="Resolver" onClick={handleGraficarClick} />
             </div>
           </div>
         </div>
@@ -366,7 +373,7 @@ export const Pert= () => {
                   min={0}
                   className='cantidad'
                 />
-                <input type="submit" value="Calculate" onClick={Probabilidad}/>
+                <input type="submit" value="Calcular" onClick={Probabilidad}/>
               </form>
               <div className='input-group mt-3'>
                 <span className="input-group-text">Z</span>
@@ -422,20 +429,32 @@ function GraficoPert(graph){
       }
     })
     ruta.value=''
+    let contador = 0
     allPaths.forEach(rutas=>{
       let bandera = true
+      let numero=0
       rutas.forEach(elemento=>{
         const aux = graph.nodes.find(node => node.name == elemento.source)
         const recorrido = graph.nodes.find(node => node.name == elemento.target+'-1')
         const valink = graph.links.find(link => link.source == elemento.source && link.target == elemento.target)
         if(recorrido && valink && aux && valink.duration!=0){
-          if(recorrido.IT==recorrido.TL && (parseFloat(aux.IT)+parseFloat(valink.duration)==recorrido.IT)){
+          console.log(numero+' + '+valink.duration+' = '+recorrido.IT)
+          numero+=parseFloat(valink.duration)
+          console.log(aux.IT+' + '+valink.duration+' = '+recorrido.IT)
+          console.log(recorrido.TL+' = '+recorrido.IT)
+          if((recorrido.TL-recorrido.IT<0.0000001 || recorrido.IT-recorrido.IL<0.0000001 || recorrido.IT==recorrido.TL) && (numero ==recorrido.IT)){
+            console.log(' ENTRO ')
           }else{
             bandera = false
+            console.log(' NO ENTRO ')
           }
         }
       })
       if(bandera){
+        if(contador>0){
+          ruta.value += '\n';
+        }
+        ruta.value += ' ['+(contador+1)+'] ';
         for (let i = 0; i < rutas.length - 1; i++) {
           if(rutas[i].duration==0){
             ruta.value += 'Fic';
@@ -446,11 +465,11 @@ function GraficoPert(graph){
             ruta.value += ' 🠖 ';
           }
         }
-        ruta.value += '\n';
+        contador++
       }
     })
-    varianza.value = Math.sqrt(sumav).toFixed(4)
-    valor.value = longestDuration.toFixed(4)  
+    varianza.value = Math.sqrt(sumav).toFixed(7)
+    valor.value = longestDuration
   }
   
   if (!graph || !Array.isArray(graph.nodes)) {
@@ -629,6 +648,17 @@ function enlazar(graph){
     if(node.last.length > 1){
       var bandera=true
       let llegadas = node.last.split(' ')
+      let valores = []
+      llegadas.forEach(mayores=>{
+        let buscamayor = graph.nodes.find(nodos => nodos.name == mayores)
+        if(buscamayor){
+          valores.push({mayor:buscamayor.valor,nodo:buscamayor.name})
+          console.log(buscamayor.valor)
+        }
+      })
+      let objetoMaximo = valores.reduce((max, obj) => (obj.mayor > max.mayor) ? obj : max, { mayor: -Infinity });
+      console.log("El valor máximo es:", objetoMaximo.mayor);
+      console.log("El nodo asociado al valor máximo es:", objetoMaximo.nodo);
       llegadas.forEach(termino=>{
         llegadas.forEach(rastro=>{
           const enlaceEncontrados = orden.find(link => link.llegada === termino && link.partida === rastro)
@@ -638,13 +668,52 @@ function enlazar(graph){
         })
       })
       if(bandera){
+        let acumulador = []
+        
+        llegadas.forEach(buscamayor=>{
+          let sumaIteracion = 0
+          let mayor=true
+          let auxllegada=buscamayor
+          while(mayor){
+            let encontrar = graph.nodes.find(node=> node.name==auxllegada)
+            console.log("NO")
+            console.log(encontrar)
+            console.log(auxllegada)
+            if(encontrar){
+              auxllegada = encontrar.last
+              sumaIteracion += parseFloat(encontrar.valor)
+              if(auxllegada.length > 1 || auxllegada=='-'){
+                mayor=false
+                console.log("SI")
+              }
+            }
+            else{
+              mayor=false
+            }
+          }
+          acumulador.push({mayor:sumaIteracion,nodo:buscamayor})
+        })
+        let objetoMaximo = acumulador.reduce((max, obj) => (obj.mayor > max.mayor ? obj : max), {
+          mayor: -Infinity,
+          nodo: null,
+        });
+        for(let object of acumulador){
+          console.log(object.nodo+" : "+object.mayor)
+        }
         let j = 0;
         for(let k=0;k<llegadas.length;k++) {
           const partidaEncontrados = orden.find(link => link.partida === llegadas[k])
-          if (partidaEncontrados) {
+          console.log('MAYOR: '+objetoMaximo.nodo)
+          console.log(llegadas[k])
+          console.log(llegadas.length)
+          console.log(k+': '+objetoMaximo.nodo+' = '+llegadas[k])
+          console.log(partidaEncontrados)
+          if (partidaEncontrados || objetoMaximo.nodo!=llegadas[k]) {
             j = j + 1
+            console.log(10)
           } else {
             k=llegadas.length
+            console.log(20)
           }
         }
         for(let i=0;i<llegadas.length;i++){
@@ -820,6 +889,7 @@ function enlazar(graph){
   const { allPaths, longestPath, longestDuration } = findAllPaths(graph, 'Inicio', 'Fin');
 
   if (longestPath,allPaths,longestDuration) {
+    console.log(allPaths, longestPath, longestDuration)
     let records=0
     longestPath.forEach(elemento=>{
       const recorrido = graph.nodes.find(node => node.name == elemento.target)
@@ -830,6 +900,9 @@ function enlazar(graph){
         if (buscando) {
           buscando.IT=records+recorrido.IT
           buscando.TL=records+recorrido.TL
+          console.log(valink.source+':-:'+valink.target)
+          console.log('1: '+records+'++  '+recorrido.TL+' = '+recorrido.IT)
+          console.log('1: '+buscando.TL+' = '+buscando.IT)
         }
       }
     })
@@ -847,6 +920,9 @@ function enlazar(graph){
             }else{
               buscando.IT=records+recorrido.IT
             }
+            console.log(valink.source+':-:'+valink.target)
+            console.log('2: '+records+'++  '+buscando.TL+' = '+buscando.IT)
+            console.log('2: '+buscando.TL+' = '+buscando.IT)
           }
         }
       })
@@ -857,7 +933,7 @@ function enlazar(graph){
         const recorrido = graph.nodes.find(node => node.name == rutas[i].source)
         const valink = graph.links.find(link => link.source == rutas[i+1].source && link.target == rutas[i+1].target)
         if(recorrido && valink){
-          records=records-parseFloat(valink.duration)
+          records=records-(valink.duration)
           const buscando = graph.nodes.find(node => node.name == rutas[i].target+'-1')
           if (buscando) {
             if(buscando.TL < records && buscando.TL!=0){
@@ -865,10 +941,12 @@ function enlazar(graph){
             }else{
               buscando.TL=records-recorrido.TL
             }
+            console.log(valink.source+':-:'+valink.target)
+            console.log('3: '+valink.duration+'--  '+buscando.TL+' = '+buscando.IT)
+            console.log('3: '+buscando.TL+' = '+buscando.IT)
           }
         }
       }
-      console.log('/////')
     })
     longestPath.forEach(elemento=>{
       const recorrido = graph.nodes.find(node => node.name == elemento.target)
@@ -877,19 +955,25 @@ function enlazar(graph){
         if (buscando) {
           recorrido.IT=buscando.IT
           recorrido.TL=buscando.TL
+          console.log(recorrido.name)
+          console.log('4: '+recorrido.TL+' = '+recorrido.IT)
+          console.log('4: '+buscando.TL+' = '+buscando.IT)
         }
       }
     })
     allPaths.forEach(rutas=>{
+      let numero =0
       rutas.forEach(elemento=>{
-
         const aux = graph.nodes.find(node => node.name == elemento.source)
         const recorrido = graph.nodes.find(node => node.name == elemento.target+'-1')
         const valink = graph.links.find(link => link.source == elemento.source && link.target == elemento.target)
         if(recorrido && valink && aux && valink.duration!=0){
-
-          if(recorrido.IT==recorrido.TL && (parseFloat(aux.IT)+parseFloat(valink.duration)==recorrido.IT)){
+          console.log(numero+' + '+valink.duration+' = '+recorrido.IT)
+          numero+=parseFloat(valink.duration)
+          console.log(aux.IT+' + '+valink.duration+' = '+recorrido.IT)
+          if((recorrido.TL-recorrido.IT<0.0000001 || recorrido.IT-recorrido.IL<0.0000001 || recorrido.IT==recorrido.TL) && (numero ==recorrido.IT)){
             valink.type='ruta'
+            console.log('ENTER')
           }
         }
       })

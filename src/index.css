@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 body {
   margin: 0;
   min-height: 100vh;
@@ -8,6 +9,14 @@ body {
   background-color: white ;
   scrollbar-width: thin;
   scrollbar-color: #888 #f0f0f0;
+}
+.pantalla-grande{
+  display: flex;
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 .bg-custom{
   background-color: white;
@@ -28,21 +37,18 @@ body {
 input[readOnly] {
   color: black;
 }
-input:not([readOnly]) {
+input:not([readOnly]):not([type="submit"]) {
   background-color: #dedfe1;
   color: #303032;
   border: 1.75px solid white;
 }
-input[type="submit"] {
-  background-color: #ffffff;
-  color: #303032;
-  border: 2px solid #dedfe1;
-}
-input[value="Solve"] {
-  width: 100%;
-}
-input[value="Resolver"] {
-  width: 100%;
+
+.strokes{
+  width: 50%;
+  background-color: #2282a9;
+  color: #dedfe1;
+  border-radius: 7px;
+  border: none;
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -110,6 +116,7 @@ video {
   filter: grayscale(100%);
 }
 .content {
+  background: rgba(0, 0, 0, 0.7);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -118,17 +125,90 @@ video {
   color: #fff;
   z-index: 1;
 }
+svg text{
+  fill: #ffffff;
+  cursor: pointer;
+  font-size: 1.25em;
+}
+svg circle{
+  fill: rgba(255, 255, 255, .1);
+  stroke: #ffffff;
+  stroke-width: 3;
+  cursor: pointer;
+}
+svg text:hover {
+  font-size: 1.75em;
+}
 .table-container {
   overflow-x: hidden; /* Eliminar la barra de desplazamiento horizontal en pantallas grandes */
 }
+.metodos{
+  display: flex;
+  width: 100%;
+}
 .menu-portada{
   list-style: none;
+  display: flex;
+  justify-content:flex-start;
+  align-items: self-start;
+}
+.tema{
+  border: .5px solid rgba(128, 128, 128, .3);
+  overflow: hidden;
+  display: flex;
+}
+.tema:hover {
+  background-color: rgb(60, 57, 57);
+}
+.tema:hover a {
+  color: white;
+  font-size: 2.2em;
+  text-shadow: 2px 2px 4px rgba(182, 179, 179, 0.8);
+}
+.tema img{
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  transition: transform 0.6s ease-in-out, opacity 0.3s ease-in-out;
+  z-index: 1;
+}
+.tema img:hover{
+  transform: scale(1.1);
+  filter: brightness(0.5);
+}
+.glass{
+  backdrop-filter: blur(9px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+  border: .5px solid rgb(255, 255, 255, 0.1);
+}
+.second-title{
+  box-shadow: 10px 7px 7px rgba(216, 215, 215,.5);
+  position: sticky;
+  top: 0%;
+  background: white;
+  z-index: 2;
+}
+.second-title h1{
+  font-weight: 300;
 }
 .lista-portada{
-  color: white;
+  font-size: 1.9em;
   text-decoration: none;
-  font-weight: bold;
-  font-size: 5em;
+  font-optical-sizing: auto;
+  font-style: normal;
+  color: black;
+  font-weight: 300;
+  text-align: left;
+}
+.title-portada{
+  text-decoration: none;
+  font-size: 3.5em;
+  color: #ffffff;
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  margin: 0;
+  padding: 0;
 }
 
 ::-webkit-scrollbar {
@@ -141,7 +221,14 @@ video {
   background-color: #ffffff;
 }
 
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @media (max-width: 480px) {
+  .title-portada{
+    font-size: 2.5em;
+  }
   video {
     height: 100vh;
   }
@@ -149,5 +236,8 @@ video {
     overflow-x: scroll; /* Agregar una barra de desplazamiento horizontal cuando el contenido sea más ancho que el contenedor */
     white-space: nowrap; /* Evitar el ajuste de texto para que el contenido no se rompa en varias líneas */
     max-width: 100%; /* Especifica el ancho máximo del contenedor según tus necesidades */
+  }
+  .lista-portada{
+    font-size: 1.3em;
   }
 }

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 export const Desicion = () => {
+  const [mostrarInput, setMostrarInput] = useState(true);
+  const [mostrarTable, setMostrarTable] = useState(false);
+  const [mostrarTC, setMostrarTC] = useState(false);
+  const [mostrarTN, setMostrarTN] = useState(false);
+  const [mostrarTF, setMostrarTF] = useState(false);
+
   const [numeroAtributos, setNumeroAtributos] = useState(0);
   const [numeroOpciones, setnumeroOpciones] = useState(0);
   const [Matrices, setMatrices] = useState([]);
@@ -31,6 +37,8 @@ export const Desicion = () => {
       })
     }
     setCriterio(datos_criterios)
+    setMostrarInput(false);
+    setMostrarTC(true);
   };
   const handleInputChangeMatriz = (e, index, key) => {
     const newOpciones = [...CMatriz];
@@ -52,6 +60,13 @@ export const Desicion = () => {
     newMatrices[matrizIndex][filaIndex][elementoIndex] = e.target.value;
     setMatrices(newMatrices);
   };
+  const handleEditClick = () => {
+    setMostrarInput(true);
+    setMostrarTable(false);
+    setMostrarTC(false);
+    setMostrarTN(false);
+    setMostrarTF(false);
+  }
   const graficar = () =>{
     event.preventDefault()
     const numAtributos =Criterio.length
@@ -85,16 +100,13 @@ export const Desicion = () => {
     }
     setMatrices(CriteriosNuevas)
     console.log(Matrices)
+    setMostrarTN(true);
   }
   const normalizar = () =>{
     console.log(Matrices)
     event.preventDefault()
     const variasmatrices = []
     const resultMatrices =[]
-    
-
-
-
     for (let i = 0; i < Matrices.length; i++) {
       const fila =[]
       for (let m = 0; m < Matrices[i].length; m++) {
@@ -162,9 +174,9 @@ export const Desicion = () => {
     console.log(variasmatrices)
     setData(variasmatrices)
     console.log(Data)
-  }
+  /*}
   const comparacionCriterios = () =>{
-    event.preventDefault()
+    event.preventDefault()*/
 
     const matriz = []
     Criterio.forEach((filaC , indexf)=>{
@@ -181,6 +193,7 @@ export const Desicion = () => {
       matriz.push(fila)
     })
     setCMatriz(matriz)
+    setMostrarTable(true);
   }
   const comparar = () =>{
     event.preventDefault()
@@ -228,11 +241,6 @@ export const Desicion = () => {
     })
     setNormaliza(normal)
     console.log(Normaliza)
-
-    
-  
-   
-  
     console.log(Comparado)
     const orden = []
     for (let i = 0; i < Normaliza.length; i++) {
@@ -258,7 +266,7 @@ export const Desicion = () => {
   
           fila.push(Data[j][i][Data[0][0].length-1])
         }
-        fila.push(sumas[i].toFixed(6))
+        fila.push(sumas[i])
         matriz.push(fila)
       }
   
@@ -267,363 +275,400 @@ export const Desicion = () => {
 
       
     console.log(sumas)
-
+    setMostrarTF(true);
   }
   useEffect(() => {
-    // Coloca aquí la lógica que debe ejecutarse después de que Mayor se actualice
-
-    // Resto de tu lógica
   },[Comparado],[Normaliza]);
 
   return(
 
-    <div className='row m-0 p-0'>
+    <div className='row m-0 p-0 d-flex justify-content-center'>
+      
       <div className='col-12 p-2'>
         <div className='marco m-3'>
-          <div className='card m-3'>
+            <div className='recuadro m-3'>
+              <h2>Calculadora de Teoría de Desiciones</h2>
+              <br></br>
+              <h3>Instrucciones</h3>
+              <p>
+                •Ingresar valores mayores a cero.
+              </p>
+              <p>
+                •Los valores ingresados en la Matrices de los Criterios deben estar siempre con un "/" por mas que sea un numero entero.
+              </p>
+            </div>
+          </div>
+        {mostrarInput && (
+        <div className='marco m-3'>
+          <div className='recuadro m-3'>
             <form onSubmit={handleFormSubmit}>
-              <div className='row m-0 p-0'>
-              <div className='col-lg-6 col-12 p-2 m-0'>
-              <label htmlFor="numeroAtributos">N° Criterios:&nbsp;&nbsp;</label>
-              <input
-                type="number"
-                id="numeroAtributos"
-                name="numeroAtributos"
-                min={2}
-                value={numeroAtributos}
-                onChange={(e) => setNumeroAtributos(e.target.value)}
-              />
-              </div>
-              <div className='col-lg-6 col-12 p-2 m-0'>
-              <label htmlFor="numeroOpciones">N° Opciones:&nbsp;&nbsp;</label>
-              <input
-                type="number"
-                id="numeroOpciones"
-                name="numeroOpciones"
-                min={2}
-                value={numeroOpciones}
-                onChange={(e) => setnumeroOpciones(e.target.value)}
-              />
-              </div>
-              <input type="submit" value="Numeration" />
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div className='col-lg-6 col-12 p-2'>
-        <div className='marco m-3'>
-          <div className='card m-3 table-container'>
-            <table className="m-0">
-              <thead className='m-0'>
-                <tr>
-                  <th scope="col">N°</th>
-                  <th scope="col">Criterios</th>
-                </tr>
-              </thead>
-              <tbody className='m-0'>
-                {Criterio.map((info_criterio, critIndex) => (
-                <tr scope="row m-0 p-0" key={critIndex}>
-                  <td className='m-0 col'>
-                    <input
-                      type='text'
-                      readOnly
-                      value={critIndex+1}
-                      />
-                  </td>
-                  <td className='m-0 col'>
-                    <input
-                      type="text"
-                      value={info_criterio.nombre}
-                      onChange={(e) =>handleInputChangeCriterios(e,critIndex,'nombre')}
-                    />
-                  </td>
-                </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div className='col-lg-6 col-12 p-2'>
-        <div className='marco m-3'>
-          <div className='card m-3 table-container'>
-            <table className="m-0">
-              <thead className='m-0'>
-                <tr>
-                  <th scope="col">N°</th>
-                  <th scope="col">Opciones</th>
-                </tr>
-              </thead>
-              <tbody className='m-0'>
-                {Opciones.map((opcion, opIndex) => (
-                <tr scope="row m-0 p-0" key={opIndex}>
-                  <td className='m-0 col'>
-                    <input
-                      type='text'
-                      readOnly
-                      value={opIndex+1}
-                      />
-                  </td>
-                  <td className='m-0 col'>
-                    <input
-                      type="text"
-                      value={opcion.nombre}
-                      onChange={(e) =>handleInputChangeOpciones(e,opIndex,'nombre')}
-                    />
-                  </td>
-                </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div className='col-12 p-2'>
-        <div className='marco m-3'>
-          <div className='m-3'>
-            <form onSubmit={graficar}>
-              <input type="submit" value="Solve" />
-            </form>
-          </div>
-        </div>
-      </div>
-      <div className='col-lg-6 col-12 p-2'>
-        <div className='marco m-3'>
-          <div className='card m-3'>
-            <h3>Criterios</h3>
-          </div>
-          {Matrices.map((Matriz, matrizIndex) => (   
-          <div className='card m-3 table-container' key={matrizIndex}>
-            <h5>{Criterio[matrizIndex].nombre}</h5>
-            <table className="m-0 t-desicion">
-              <tbody className='m-0'>
-                {Matriz.map((fila, filaIndex) => (
-                  <tr scope="row m-0 p-0" key={filaIndex}>
-                    {fila.map((elemento, elementoIndex) => (
-                      <td className='m-0 col' key={elementoIndex}>
-                          <input
-                            type="text"
-                            value={elemento}
-                            readOnly={filaIndex === 0 || filaIndex === Opciones.length+1 || elementoIndex === 0 || filaIndex === elementoIndex}
-                            onChange={(e) => handleInputChange(e, matrizIndex, filaIndex, elementoIndex)}
-                          />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          ))}
-        </div>
-        <div className='marco m-3'>
-          <form onSubmit={normalizar}>
-            <div className='m-3'>
-              <input type="submit" value="Solve" />
-            </div>
-          </form>
-        </div>
-      </div>
-      <div className='col-lg-6 col-12 p-2'>
-        <div className='marco m-3'>
-          <div className='card m-3'>
-            <h3>Matriz Normalizada</h3>
-          </div>
-          {Data.map((dataMatriz, datIndex) => (   
-          <div className='card m-3 table-container'>
-            <h5>{Criterio[datIndex].nombre}</h5>
-            <table className="m-0 t-desicion">
-              <thead className='m-0'>
-                <tr>
-                  <th scope="col" colSpan={Opciones.length}>Matriz Normalizada</th>
-                  <th scope="col">Promedio</th>
-                </tr>
-              </thead>
-              <tbody className='m-0'>
-                {dataMatriz.map((datafila) => (
-                  <tr scope="row m-0 p-0">
-                    {datafila.map((dataelemento) => (
-                      <td className='m-0 col'>
-                          <input
-                            type="text"
-                            value={dataelemento}
-                            readOnly
-                          />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className='m-1'>
-              <input
-                type="text"
-                readOnly
-                style={{ border: '2.3px solid #18191b' }}
-              />
-            </div>
-          </div>
-          ))}
-        </div>
-        <div className='marco m-3'>
-          <form onSubmit={comparacionCriterios}>
-            <div className='m-3'>
-              <input type="submit" value="Comparation" />
-            </div>
-          </form>
-        </div>
-      </div>
-      <div className='col-lg-6 col-12 p-2'>
-        <div className='marco m-3'>
-          <div className='card m-3'>
-            <h3>Matriz de Comparacion de Criterios</h3>
-          </div>
-          <div className='card m-3 table-container'>
-            <table className="m-0 t-desicion">
-              <tbody className='m-0'>
-              <tr scope="row m-0 p-0">
-                <td className='m-0 col'>
-                    <input
-                      type="text"
-                      readOnly
-                  />
-                </td>
-                {CMatriz.map((elemeto,indeElemento)=>(
-                <td className='m-0 col'>
+              <div className='row m-0 p-0 d-flex justify-content-center'>
+                <div className='col-lg-6 col-12 p-2 m-0'>
+                  <label htmlFor="numeroAtributos">N° Criterios:&nbsp;&nbsp;</label>
                   <input
-                    type="text"
-                    value={Criterio[indeElemento].nombre}
-                    readOnly
+                    type="number"
+                    id="numeroAtributos"
+                    name="numeroAtributos"
+                    min={2}
+                    value={numeroAtributos}
+                    onChange={(e) => setNumeroAtributos(e.target.value)}
                   />
-                </td>
-                ))}
-              </tr>
-              {CMatriz.map((filacomp, indexfilacomp) => (
-                <tr scope="row m-0 p-0" key={indexfilacomp}>
-                  <td className='m-0 col'>
-                    <input
-                      type="text"
-                      value={Criterio[indexfilacomp].nombre}
-                      readOnly
-                    />
-                  </td>
-                  {filacomp.map((compo, indexcompo) => (
-                    <td className='m-0 col' key={indexcompo}>
+                </div>
+                <div className='col-lg-6 col-12 p-2 m-0'>
+                  <label htmlFor="numeroOpciones">N° Opciones:&nbsp;&nbsp;</label>
+                  <input
+                    type="number"
+                    id="numeroOpciones"
+                    name="numeroOpciones"
+                    min={2}
+                    value={numeroOpciones}
+                    onChange={(e) => setnumeroOpciones(e.target.value)}
+                  />
+                </div>
+                <input className='strokes' type="submit" value="Generar" />
+              </div>
+            </form>
+          </div>
+          <div className='recuadro m-3'>
+            <p className="emphasized">Imagen Representativa</p>
+            <div className='row m-0 d-flex justify-content-center'>
+              <div className='col-lg-8 col-12 p-2'>
+                <img src='https://rvargas-static.s3.amazonaws.com/images/articles/articles_compendium_ahp_es-web-resources/image/3104.png' className='img-fluid'></img>
+              </div>
+            </div>
+          </div>
+        </div>
+        )}
+      </div>
+      
+      {mostrarTC && (
+      <div className='row m-0 p-0 d-flex justify-content-center'>
+        <div className='col-lg-10 col-12 p-0'>
+          <div className='marco m-3'>
+            <div className='recuadro m-3'>
+              <input type="button" value="Editar" onClick={handleEditClick} />
+            </div>
+          </div>
+        </div>
+        <div className='col-lg-5 col-12 p-0'>
+          <div className='marco m-3'>
+            <div className='card m-3 table-container'>
+              <table className="m-0">
+                <thead className='m-0'>
+                  <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Criterios</th>
+                  </tr>
+                </thead>
+                <tbody className='m-0'>
+                  {Criterio.map((info_criterio, critIndex) => (
+                  <tr scope="row m-0 p-0" key={critIndex}>
+                    <td className='m-0 col'>
+                      <input
+                        type='text'
+                        readOnly
+                        value={critIndex+1}
+                        />
+                    </td>
+                    <td className='m-0 col'>
                       <input
                         type="text"
-                        value={compo}
-                        onChange={(e) =>handleInputChangeMatriz(e,indexfilacomp,indexcompo)}
-                        readOnly={indexfilacomp==indexcompo}
+                        value={info_criterio.nombre}
+                        onChange={(e) =>handleInputChangeCriterios(e,critIndex,'nombre')}
                       />
                     </td>
-                  ))}
-                </tr>
-              ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className='marco m-3'>
-          <form onSubmit={comparar}>
-            <div className='m-3'>
-              <input type="submit" value="Comparar" />
-            </div>
-          </form>
-        </div>
-      </div>
-      <div className='col-lg-6 col-12 p-2'>
-        <div className='marco m-3'>
-          <div className='card m-3'>
-            <h3>Matriz Normalizada de Criterios</h3>
-          </div>  
-          <div className='card m-3 table-container'>
-            <table className="m-0 t-desicion">
-              <thead className='m-0'>
-                <tr>
-                  <th scope="col" colSpan={Criterio.length}>Matriz Normalizada</th>
-                  <th scope="col">Promedio</th>
-                </tr>
-              </thead>
-              <tbody className='m-0'>
-                {Normaliza.map((Normalizafila) => (
-                  <tr scope="row m-0 p-0">
-                    {Normalizafila.map((dataNormaliza) => (
-                      <td className='m-0 col'>
-                          <input
-                            type="text"
-                            value={dataNormaliza}
-                            readOnly
-                          />
-                      </td>
-                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div className='col-lg-5 col-12 p-0'>
+          <div className='marco m-3'>
+            <div className='card m-3 table-container'>
+              <table className="m-0">
+                <thead className='m-0'>
+                  <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Opciones</th>
+                  </tr>
+                </thead>
+                <tbody className='m-0'>
+                  {Opciones.map((opcion, opIndex) => (
+                  <tr scope="row m-0 p-0" key={opIndex}>
+                    <td className='m-0 col'>
+                      <input
+                        type='text'
+                        readOnly
+                        value={opIndex+1}
+                        />
+                    </td>
+                    <td className='m-0 col'>
+                      <input
+                        type="text"
+                        value={opcion.nombre}
+                        onChange={(e) =>handleInputChangeOpciones(e,opIndex,'nombre')}
+                      />
+                    </td>
+                  </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div className='col-lg-10 col-12 p-2'>
+          <div className='marco m-3'>
+            <div className='m-3'>
+              <form onSubmit={graficar} className='d-flex justify-content-center'>
+                <input className='strokes' type="submit" value="Crear" />
+              </form>
+            </div>
           </div>
         </div>
       </div>
-      <div className='col-lg-12 col-12 p-2'>
-        <div className='marco m-3'>
-          <div className='card m-3'>
-            <h3>Matriz de Comparacion</h3>
+      )}
+      {mostrarTN && (
+      <div className='row m-0 p-0 d-flex justify-content-center'>
+        <div className='col-lg-10 col-12 p-2'>
+          <div className='marco m-3'>
+            <div className='recuadro m-3'>
+              <h3>Criterios</h3>
+            </div>
+            {Matrices.map((Matriz, matrizIndex) => (   
+            <div className='card m-3 table-container' key={matrizIndex}>
+              <h5>{Criterio[matrizIndex].nombre}</h5>
+              <table className="m-0 t-desicion">
+                <tbody className='m-0'>
+                  {Matriz.map((fila, filaIndex) => (
+                    <tr scope="row m-0 p-0" key={filaIndex}>
+                      {fila.map((elemento, elementoIndex) => (
+                        <td className='m-0 col' key={elementoIndex}>
+                            <input
+                              type="text"
+                              value={elemento}
+                              readOnly={filaIndex === 0 || filaIndex === Opciones.length+1 || elementoIndex === 0 || filaIndex === elementoIndex}
+                              onChange={(e) => handleInputChange(e, matrizIndex, filaIndex, elementoIndex)}
+                            />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            ))}
           </div>
-          <div className='card m-3 table-container'>
-            <table className="m-0 t-desicion">
-              <tbody className='m-0'>
-              <tr scope="row m-0 p-0">
-                <td className='m-0 col'>
-                    <input
-                      type="text"
-                      readOnly
-                  />
-                </td>
-                {Criterio.map((elemeto)=>(
-                <td className='m-0 col'>
-                  <input
-                    type="text"
-                    value={elemeto.nombre}
-                    readOnly
-                  />
-                </td>
-                ))}
-                <td className='m-0 col'>
-                  <input
-                    type="text"
-                    value='Total'
-                    readOnly
-                  />
-                </td>
-              </tr>
-              {Comparado.map((filacomp, indexfilacomp) => (
-                <tr scope="row m-0 p-0" key={indexfilacomp}>
+        </div>
+        <div className='col-lg-10 col-12 p-2'>
+          <div className='marco m-3'>
+            <form onSubmit={normalizar}>
+              <div className='m-3 d-flex justify-content-center'>
+                <input  className='strokes' type="submit" value="Normalizar" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      )}
+      {mostrarTable && (
+      <div className='row m-0 p-0 d-flex justify-content-center'>
+        <div className='col-lg-10 col-12 p-2'>
+          <div className='marco m-3'>
+            <div className='recuadro m-3'>
+              <h3>Matriz Normalizada</h3>
+            </div>
+            {Data.map((dataMatriz, datIndex) => (   
+            <div className='card m-3 table-container'>
+              <h5>{Criterio[datIndex].nombre}</h5>
+              <table className="m-0 t-desicion">
+                <thead className='m-0'>
+                  <tr>
+                    <th scope="col" colSpan={Opciones.length}>Matriz Normalizada</th>
+                    <th scope="col">Promedio</th>
+                  </tr>
+                </thead>
+                <tbody className='m-0'>
+                  {dataMatriz.map((datafila) => (
+                    <tr scope="row m-0 p-0">
+                      {datafila.map((dataelemento) => (
+                        <td className='m-0 col'>
+                            <input
+                              type="text"
+                              value={dataelemento}
+                              readOnly
+                            />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className='m-1'>
+                <input
+                  type="text"
+                  readOnly
+                  style={{ border: '2.3px solid #ffffff' }}
+                />
+              </div>
+            </div>
+            ))}
+          </div>
+        </div>
+        <div className='col-lg-10 col-12 p-2'>
+          <div className='marco m-3'>
+            <div className='recuadro m-3'>
+              <h3>Matriz de Comparacion de Criterios</h3>
+            </div>
+            <div className='card m-3 table-container'>
+              <table className="m-0 t-desicion">
+                <tbody className='m-0'>
+                <tr scope="row m-0 p-0">
+                  <td className='m-0 col'>
+                      <input
+                        type="text"
+                        readOnly
+                    />
+                  </td>
+                  {CMatriz.map((elemeto,indeElemento)=>(
                   <td className='m-0 col'>
                     <input
                       type="text"
-                      value={Opciones[indexfilacomp].nombre}
+                      value={Criterio[indeElemento].nombre}
                       readOnly
                     />
                   </td>
-                  {filacomp.map((compo, indexcompo) => (
-                    <td className='m-0 col' key={indexcompo}>
+                  ))}
+                </tr>
+                {CMatriz.map((filacomp, indexfilacomp) => (
+                  <tr scope="row m-0 p-0" key={indexfilacomp}>
+                    <td className='m-0 col'>
                       <input
                         type="text"
-                        value={compo}
+                        value={Criterio[indexfilacomp].nombre}
                         readOnly
                       />
                     </td>
-                  ))}
-                </tr>
-              ))}
-              </tbody>
-            </table>
+                    {filacomp.map((compo, indexcompo) => (
+                      <td className='m-0 col' key={indexcompo}>
+                        <input
+                          type="text"
+                          value={compo}
+                          onChange={(e) =>handleInputChangeMatriz(e,indexfilacomp,indexcompo)}
+                          readOnly={indexfilacomp==indexcompo}
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className='marco m-3'>
+            <form onSubmit={comparar}>
+              <div className='m-3 d-flex justify-content-center'>
+                <input className='strokes'  type="submit" value="Comparar" />
+              </div>
+            </form>
           </div>
         </div>
       </div>
-      <div className='col-lg-12 col-12 p-0 m-0'>
-        <iframe src="https://kuula.co/share/collection/7Xq6d?logo=1&info=1&fs=1&vr=0&thumbs=1" frameborder="0"  style={{height:'100vh',width:'100%' }}></iframe>
-      </div>         
+      )}
+      {mostrarTF && (
+      <div className='row m-0 p-0 d-flex justify-content-center'>
+        <div className='col-lg-10 col-12 p-2'>
+          <div className='marco m-3'>
+            <div className='recuadro m-3'>
+              <h3>Matriz Normalizada de Criterios</h3>
+            </div>  
+            <div className='card m-3 table-container'>
+              <table className="m-0 t-desicion">
+                <thead className='m-0'>
+                  <tr>
+                    <th scope="col" colSpan={Criterio.length}>Matriz Normalizada</th>
+                    <th scope="col">Promedio</th>
+                  </tr>
+                </thead>
+                <tbody className='m-0'>
+                  {Normaliza.map((Normalizafila) => (
+                    <tr scope="row m-0 p-0">
+                      {Normalizafila.map((dataNormaliza) => (
+                        <td className='m-0 col'>
+                            <input
+                              type="text"
+                              value={dataNormaliza}
+                              readOnly
+                            />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div className='col-lg-10 col-12 p-2'>
+          <div className='marco m-3'>
+            <div className='recuadro m-3'>
+              <h3>Matriz de Comparacion</h3>
+            </div>
+            <div className='card m-3 table-container'>
+              <table className="m-0 t-desicion">
+                <tbody className='m-0'>
+                <tr scope="row m-0 p-0">
+                  <td className='m-0 col'>
+                      <input
+                        type="text"
+                        readOnly
+                    />
+                  </td>
+                  {Criterio.map((elemeto)=>(
+                  <td className='m-0 col'>
+                    <input
+                      type="text"
+                      value={elemeto.nombre}
+                      readOnly
+                    />
+                  </td>
+                  ))}
+                  <td className='m-0 col'>
+                    <input
+                      type="text"
+                      value='Total'
+                      readOnly
+                    />
+                  </td>
+                </tr>
+                {Comparado.map((filacomp, indexfilacomp) => (
+                  <tr scope="row m-0 p-0" key={indexfilacomp}>
+                    <td className='m-0 col'>
+                      <input
+                        type="text"
+                        value={Opciones[indexfilacomp].nombre}
+                        readOnly
+                      />
+                    </td>
+                    {filacomp.map((compo, indexcompo) => (
+                      <td className='m-0 col' key={indexcompo}>
+                        <input
+                          type="text"
+                          value={compo}
+                          readOnly
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      )}
   </div>
 
   )

@@ -46,6 +46,7 @@ export const Cpm = () => {
     setMostrarCanvas(false);
   }
   const handleGraficarClick = () => {
+    event.preventDefault()
     var cifra=0
     const validPredecesores = actividades.every((actividad) => {
       const predecesores = actividad.predecesores.trim();
@@ -63,17 +64,7 @@ export const Cpm = () => {
       showmessage('Los Predecesores no pueden estar en blanco o en su defecto colocar un "-" para indicar el Inicio. Debe ingresar predecesores válidos.');
       return; 
     }
-    const validValores = actividades.every((actividad) => {
-      const valor = actividad.duracion.trim()
-      if (!valor) {
-        return false;
-      }
-      return !isNaN(valor)
-    });
-    if (!validValores) {
-      showmessage('La Duración de las actividades debe ser un número válido y no puede estar en blanco.');
-      return;
-    }
+    
 
     let hasError = false;
     const validSpacePredecesores = actividades.every((actividad) => {
@@ -101,16 +92,7 @@ export const Cpm = () => {
       showmessage('Los Predecesores no pueden incluir a la Actividad de su misma fila.');
       return;
     }
-    let positividad = true;
-    actividades.forEach(number=>{
-      if(number.duracion <=0){
-        positividad=false
-      }
-    })
-    if (!positividad) {
-      showmessage('Los valores de tiempo no pueden ser menores o iguales a cero');
-      return;
-    }
+    
     let haSactividadP = true;
     actividades.forEach(elemento=>{
       if(elemento.predecesores.length > 1){
@@ -134,6 +116,42 @@ export const Cpm = () => {
     })
     if (!haSactividadP) {
       showmessage('Ha inculido un Predecesor que no esta incluido en la lista de Actividades');
+      return;
+    }
+    let haSactividadCoincidencia = true;
+    actividades.forEach(elemento=>{
+      if(elemento.predecesores.length > 1){
+        const pred = elemento.predecesores.split(' ')
+        const tieneDuplicados = pred.some((valor, indice) => pred.indexOf(valor) !== indice);
+        if (tieneDuplicados) {
+          console.log('Hay elementos duplicados en predecesores:', pred);
+          haSactividadCoincidencia = false;
+        }
+      }
+    })
+    if (!haSactividadCoincidencia) {
+      showmessage('No puede insertar una actividad mas de una vez como predecesor de una actividad');
+      return;
+    }
+    let positividad = true;
+    actividades.forEach(number=>{
+      if(number.duracion <=0){
+        positividad=false
+      }
+    })
+    if (!positividad) {
+      showmessage('Los valores de tiempo no pueden ser menores o iguales a cero');
+      return;
+    }
+    const validValores = actividades.every((actividad) => {
+      const valor = actividad.duracion.trim()
+      if (!valor) {
+        return false;
+      }
+      return !isNaN(valor)
+    });
+    if (!validValores) {
+      showmessage('La Duración de las actividades debe ser un número válido y no puede estar en blanco.');
       return;
     }
     const nodes = actividades.map((actividad) => {
@@ -170,31 +188,6 @@ export const Cpm = () => {
         <div className='col-12 p-2'>
           <div className='marco m-3'>
             <div className='recuadro m-3'>
-              <h2>CPM (Critical Path Method)</h2>
-              <br></br>
-              <p>
-                El método CPM o Ruta Crítica (equivalente a la sigla en inglés Critical Path Method) es
-                frecuentemente utilizado en el desarrollo y control de proyectos. El objetivo principal es
-                determinar la duración de un proyecto, entendiendo éste como una secuencia de actividades
-                relacionadas entre sí, donde cada una de las actividades tiene una duración estimada.
-              </p>
-              <p>
-                En este sentido el principal supuesto de CPM es que las actividades y sus tiempos de duración
-                son conocidos, es decir, no existe incertidumbre. Este supuesto simplificador hace que esta
-                metodología sea fácil de utilizar y en la medida que se quiera ver el impacto de la incertidumbre
-                en la duración de un proyecto, se puede utilizar un método complementario como lo es PERT.
-              </p>
-              <p>
-                Una ruta es una trayectoria desde el inicio hasta el final de un proyecto. En este sentido, la
-                longitud de la ruta crítica es igual a la la trayectoria más grande del proyecto. Cabe destacar que
-                la duración de un proyecto es igual a la ruta crítica
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className='col-12 p-2'>
-          <div className='marco m-3'>
-            <div className='recuadro m-3'>
               <h2>Calculadora CPM</h2>
               <br></br>
               <h3>Instrucciones</h3>
@@ -204,18 +197,22 @@ export const Cpm = () => {
               <p>
                 •En la duración de la actividad se deben ingresar sólo valores positivos. Puedes ingresar decimales con punto.
               </p>
+              <p>
+                •Si desea indicar que una actividad contiene como predecesor el Inicio inserte "-".
+              </p>
             </div>
           </div>
           {mostrarInput && (
           <div className='marco m-3'>
             <div className='recuadro m-3'>
               <form onSubmit={handleFormSubmit}>
-                <label htmlFor="numero">Ingresar N° Actividades:&nbsp;&nbsp;</label>
+                <label htmlFor="numero">N° Actividades:&nbsp;&nbsp;</label>
                 <input
                   type="number"
                   name='numero'
                   min={2}
                   value={numeroActividades}
+                  placeholder='Max 10'
                   onChange={(e) => setNumeroActividades(e.target.value)}
                 />
                 <input type="submit" value="Crear" />
@@ -225,7 +222,7 @@ export const Cpm = () => {
               <p className="emphasized">Imagen Representativa</p>
               <div className='row m-0 d-flex justify-content-center'>
                 <div className='col-lg-8 col-12 p-2'>
-                  <img src='https://diagramaweb.com/wp-content/uploads/2020/10/diagrama-de-flechas-pasos-1.png' className='img-fluid'></img>
+                  <img src='https://assets.asana.biz/transform/5d0217e1-a08d-4e8c-a8cb-616e658f434e/inline-project-management-critical-path-method-2-es-2x' className='img-fluid'></img>
                 </div>
               </div>
             </div>
@@ -284,8 +281,8 @@ export const Cpm = () => {
             </div>
           </div>
           <div className='marco m-3'>
-            <div className='m-3'>
-              <input type="button" value="Resolver" onClick={handleGraficarClick} />
+            <div className='m-3 d-flex justify-content-center'>
+              <input className='strokes' type="submit" value="Resolver" onClick={handleGraficarClick} />
             </div>
           </div>
         </div>
@@ -341,21 +338,32 @@ function GraficoCPM(graph){
   let valor = document.querySelector('.c-valor') 
   const { allPaths, longestPath, longestDuration } = findAllPaths(graph, 'Inicio', 'Fin');
   if (longestPath && longestDuration) {
+    console.log(allPaths, longestPath, longestDuration)
     ruta.value=''
+    let contador = 0
     allPaths.forEach(rutas=>{
       let bandera = true
+      let numero=0
       rutas.forEach(elemento=>{
         const aux = graph.nodes.find(node => node.name == elemento.source)
         const recorrido = graph.nodes.find(node => node.name == elemento.target+'-1')
         const valink = graph.links.find(link => link.source == elemento.source && link.target == elemento.target)
         if(recorrido && valink && aux && valink.duration!=0){
-          if(recorrido.IT==recorrido.TL && (parseFloat(aux.IT)+parseFloat(valink.duration)==recorrido.IT)){
+          console.log(numero+' + '+valink.duration+' = '+recorrido.IT)
+          numero+=parseFloat(valink.duration)
+          console.log(aux.IT+' + '+valink.duration+' = '+recorrido.IT)
+          if((recorrido.IT==recorrido.TL && (numero ==recorrido.IT))){
+            console.log(' ENTRO ')
           }else{
             bandera = false
           }
         }
       })
       if(bandera){
+        if(contador>0){
+          ruta.value += '\n';
+        }
+        ruta.value += ' ['+(contador+1)+'] ';
         for (let i = 0; i < rutas.length - 1; i++) {
           if(rutas[i].duration==0){
             ruta.value += 'Fic';
@@ -366,16 +374,17 @@ function GraficoCPM(graph){
             ruta.value += ' 🠖 ';
           }
         }
-        ruta.value += '\n';
+        contador++
       }
     })
-    valor.value = longestDuration.toFixed(2)  
+    valor.value = longestDuration
   }
 
   if (!graph || !Array.isArray(graph.nodes)) {
     console.error('Datos de gráfico no válidos');
     return;
   }
+  
   const comprobar = document.querySelector('canvas')
   if (comprobar){
   var canvas_ = d3.select("#network")
@@ -543,6 +552,7 @@ function drawLink(l) {
     }
   }
   }
+  
 }
 
 function enlazar(graph){
@@ -554,6 +564,7 @@ function enlazar(graph){
     if(node.last.length > 1){
       var bandera=true
       let llegadas = node.last.split(' ')
+      
       llegadas.forEach(termino=>{
         llegadas.forEach(rastro=>{
           const enlaceEncontrados = orden.find(link => link.llegada === termino && link.partida === rastro)
@@ -563,13 +574,52 @@ function enlazar(graph){
         })
       })
       if(bandera){
+        let acumulador = []
+        
+        llegadas.forEach(buscamayor=>{
+          let sumaIteracion = 0
+          let mayor=true
+          let auxllegada=buscamayor
+          while(mayor){
+            let encontrar = graph.nodes.find(node=> node.name==auxllegada)
+            console.log("NO")
+            console.log(encontrar)
+            console.log(auxllegada)
+            if(encontrar){
+              auxllegada = encontrar.last
+              sumaIteracion += parseFloat(encontrar.valor)
+              if(auxllegada.length > 1 || auxllegada=='-'){
+                mayor=false
+                console.log("SI")
+              }
+            }
+            else{
+              mayor=false
+            }
+          }
+          acumulador.push({mayor:sumaIteracion,nodo:buscamayor})
+        })
+        let objetoMaximo = acumulador.reduce((max, obj) => (obj.mayor > max.mayor ? obj : max), {
+          mayor: -Infinity,
+          nodo: null,
+        });
+        for(let object of acumulador){
+          console.log(object.nodo+" : "+object.mayor)
+        }
         let j = 0;
         for(let k=0;k<llegadas.length;k++) {
           const partidaEncontrados = orden.find(link => link.partida === llegadas[k])
-          if (partidaEncontrados) {
+          console.log('MAYOR: '+objetoMaximo.nodo)
+          console.log(llegadas[k])
+          console.log(llegadas.length)
+          console.log(k+': '+objetoMaximo.nodo+' = '+llegadas[k])
+          console.log(partidaEncontrados)
+          if (partidaEncontrados || objetoMaximo.nodo!=llegadas[k]) {
             j = j + 1
+            console.log(10)
           } else {
             k=llegadas.length
+            console.log(20)
           }
         }
         for(let i=0;i<llegadas.length;i++){
@@ -592,7 +642,6 @@ function enlazar(graph){
           }
         }
       }if(!bandera){
-        
         llegadas.forEach(termino=>{
           var suports={
             'partida': termino,
@@ -611,9 +660,6 @@ function enlazar(graph){
         orden.push(enlace)
         nodo_aux=nodo_aux+1
       }
-      
-      
-      
     }
     if(node.last.length == 1){
       if(node.last=='-'){
@@ -645,7 +691,6 @@ function enlazar(graph){
             flag=false
           }
         })
-        
       }else{
         if(coincidencia.name==busqueda.last){
           flag=false
@@ -800,14 +845,18 @@ function enlazar(graph){
       }
     })
     allPaths.forEach(rutas=>{
+      let numero =0
       rutas.forEach(elemento=>{
-
         const aux = graph.nodes.find(node => node.name == elemento.source)
         const recorrido = graph.nodes.find(node => node.name == elemento.target+'-1')
         const valink = graph.links.find(link => link.source == elemento.source && link.target == elemento.target)
         if(recorrido && valink && aux && valink.duration!=0){
-          if(recorrido.IT==recorrido.TL && (parseFloat(aux.IT)+parseFloat(valink.duration)==recorrido.IT)){
+          console.log(numero+' + '+valink.duration+' = '+recorrido.IT)
+          numero+=parseFloat(valink.duration)
+          console.log(aux.IT+' + '+valink.duration+' = '+recorrido.IT)
+          if(recorrido.IT==recorrido.TL && (numero==recorrido.IT)){
             valink.type='ruta'
+            console.log('ENTER')
           }
         }
       })

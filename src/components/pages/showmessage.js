@@ -1,7 +1,7 @@
 export function showmessage(content){
     Toastify({
         text: content,
-        duration: 2500,
+        duration: 3750,
         newWindow: true,
         close: true,
         gravity: "top", // `top` or `bottom`
